@@ -1,80 +1,98 @@
-const TACHES_PAR_DEFAUT = [
-  "1",
-  "2",
-  "3",
-  "4"
-];
+const TACHES_ADAM = ["1", "2", "3", "4"];
+const TACHES_MEL = ["1", "2", "3", "4"];
 
 const CLE_AUJOURDHUI = new Date().toISOString().split('T')[0];
+let archivesPubliques = { adam: {}, mel: {} };
 
-function chargerEtat() {
-  const derniereDate = localStorage.getItem('derniere_date_active');
-  let donneesActuelles = JSON.parse(localStorage.getItem('taches_actuelles') || 'null');
-
-  if (derniereDate && derniereDate !== CLE_AUJOURDHUI && donneesActuelles) {
-    sauvegarderDansArchive(derniereDate, donneesActuelles);
-    donneesActuelles = null;
+async function chargerEtat() {
+  try {
+    const reponse = await fetch('./historique.json');
+    const donnees = await reponse.json();
+    archivesPubliques = {
+      adam: donnees.adam || {},
+      mel: donnees.mel || {}
+    };
+  } catch (erreur) {
+    archivesPubliques = { adam: {}, mel: {} };
   }
 
-  if (!donneesActuelles) {
-    donneesActuelles = TACHES_PAR_DEFAUT.map(titre => ({ titre, terminee: false }));
-    localStorage.setItem('taches_actuelles', JSON.stringify(donneesActuelles));
-    localStorage.setItem('derniere_date_active', CLE_AUJOURDHUI);
-  }
+  initialiserPersonne('adam', TACHES_ADAM);
+  initialiserPersonne('mel', TACHES_MEL);
 
   afficher();
 }
 
-function basculerTache(index) {
-  const taches = JSON.parse(localStorage.getItem('taches_actuelles'));
+function initialiserPersonne(cle, tachesDefaut) {
+  const derniereDate = localStorage.getItem(`date_${cle}`);
+  let donneesActuelles = JSON.parse(localStorage.getItem(`taches_${cle}`) || 'null');
+
+  if (!donneesActuelles || derniereDate !== CLE_AUJOURDHUI) {
+    donneesActuelles = tachesDefaut.map(titre => ({ titre, terminee: false }));
+    localStorage.setItem(`taches_${cle}`, JSON.stringify(donneesActuelles));
+    localStorage.setItem(`date_${cle}`, CLE_AUJOURDHUI);
+  }
+}
+
+function basculerTache(cle, index) {
+  const taches = JSON.parse(localStorage.getItem(`taches_${cle}`));
   taches[index].terminee = !taches[index].terminee;
-  localStorage.setItem('taches_actuelles', JSON.stringify(taches));
+  localStorage.setItem(`taches_${cle}`, JSON.stringify(taches));
   afficher();
 }
 
-function archiverEtRecommencer() {
-  const taches = JSON.parse(localStorage.getItem('taches_actuelles'));
-  const dateActive = localStorage.getItem('derniere_date_active') || CLE_AUJOURDHUI;
-  
-  sauvegarderDansArchive(dateActive, taches);
+function archiverPersonne(cle) {
+  const tachesDefaut = cle === 'adam' ? TACHES_ADAM : TACHES_MEL;
+  const taches = JSON.parse(localStorage.getItem(`taches_${cle}`));
+  const dateActive = localStorage.getItem(`date_${cle}`) || CLE_AUJOURDHUI;
 
-  const nouvellesTaches = TACHES_PAR_DEFAUT.map(titre => ({ titre, terminee: false }));
-  localStorage.setItem('taches_actuelles', JSON.stringify(nouvellesTaches));
-  localStorage.setItem('derniere_date_active', CLE_AUJOURDHUI);
+  archivesPubliques[cle][dateActive] = taches;
+  telechargerJSON(archivesPubliques, 'historique.json');
+
+  const nouvellesTaches = tachesDefaut.map(titre => ({ titre, terminee: false }));
+  localStorage.setItem(`taches_${cle}`, JSON.stringify(nouvellesTaches));
+  localStorage.setItem(`date_${cle}`, CLE_AUJOURDHUI);
+
   afficher();
 }
 
-function sauvegarderDansArchive(dateTexte, taches) {
-  const historique = JSON.parse(localStorage.getItem('historique_taches') || '{}');
-  historique[dateTexte] = taches;
-  localStorage.setItem('historique_taches', JSON.stringify(historique));
+function telechargerJSON(donnees, nomFichier) {
+  const blob = new Blob([JSON.stringify(donnees, null, 2)], { type: 'application/json' });
+  const lien = document.createElement('a');
+  lien.href = URL.createObjectURL(blob);
+  lien.download = nomFichier;
+  lien.click();
 }
 
 function afficher() {
   document.getElementById('aujourdhui').innerText = `Tâches du ${CLE_AUJOURDHUI}`;
-  const taches = JSON.parse(localStorage.getItem('taches_actuelles') || '[]');
-  
-  const listeElement = document.getElementById('aFaire');
-  listeElement.innerHTML = taches.map((t, i) => `
+
+  afficherColonne('adam', 'aFaireAdam', 'historiqueAdam');
+  afficherColonne('mel', 'aFaireMel', 'historiqueMel');
+}
+
+function afficherColonne(cle, idAFaire, idHistorique) {
+  const taches = JSON.parse(localStorage.getItem(`taches_${cle}`) || '[]');
+  const divAFaire = document.getElementById(idAFaire);
+
+  divAFaire.innerHTML = taches.map((t, i) => `
     <div class="element-tache">
-      <input type="checkbox" ${t.terminee ? 'checked' : ''} onchange="basculerTache(${i})">
-      <span style="${t.terminee ? 'text-decoration: line-through; opacity: 0.6;' : ''}">${t.titre}</span>
+      <input type="checkbox" ${t.terminee ? 'checked' : ''} onchange="basculerTache('${cle}', ${i})">
+      <span class="${t.terminee ? 'barre' : ''}">${t.titre}</span>
     </div>
   `).join('');
 
-  const historique = JSON.parse(localStorage.getItem('historique_taches') || '{}');
-  const elementHistorique = document.getElementById('historique');
-  const dates = Object.keys(historique).sort().reverse();
-  
+  const divHistorique = document.getElementById(idHistorique);
+  const dates = Object.keys(archivesPubliques[cle] || {}).sort().reverse();
+
   if (dates.length === 0) {
-    elementHistorique.innerHTML = "<p>Aucune archive pour l'instant.</p>";
+    divHistorique.innerHTML = "<p>Aucune archive.</p>";
   } else {
-    elementHistorique.innerHTML = dates.map(date => `
+    divHistorique.innerHTML = dates.map(date => `
       <div class="carte-archive">
         <strong>${date}</strong>
         <ul>
-          ${historique[date].map(item => `
-            <li style="${item.terminee ? 'text-decoration: line-through;' : ''}">
+          ${archivesPubliques[cle][date].map(item => `
+            <li class="${item.terminee ? 'barre' : ''}">
               ${item.terminee ? '✅' : '❌'} ${item.titre}
             </li>
           `).join('')}
