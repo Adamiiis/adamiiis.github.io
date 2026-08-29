@@ -3,123 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ma Todolist Quotidienne</title>
-  <style>
-    body { font-family: system-ui, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; line-height: 1.6; }
-    h1, h2 { color: #333; }
-    .task-item { display: flex; align-items: center; gap: 10px; margin: 8px 0; font-size: 1.1em; }
-    .task-item input { transform: scale(1.3); cursor: pointer; }
-    button { background: #0066cc; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; margin-top: 15px; }
-    button:hover { background: #0052a3; }
-    .archive-card { background: #f4f4f5; padding: 12px; border-radius: 8px; margin-bottom: 12px; }
-    .archive-card ul { margin: 5px 0 0 20px; padding: 0; }
-  </style>
+  <title>Mel&Adam</title>
 </head>
 <body>
 
-  <h1 id="current-date">Aujourd'hui</h1>
-  <div id="todo-list"></div>
-  <button onclick="archiveAndReset()">Archiver maintenant & recommencer</button>
+  <h1 id="aujourdhui">Aujourd'hui</h1>
+  <div id="aFaire"></div>
+  <button onclick="archiverEtRecommencer()">Archiver maintenant & recommencer</button>
 
   <hr style="margin: 40px 0;">
 
   <h2>Archives</h2>
-  <div id="history"></div>
-
-  <script>
-    // Vos tâches quotidiennes récurrentes
-    const DEFAULT_TASKS = [
-      "Boire 2L d'eau",
-      "Faire du sport / Marche",
-      "Lire 15 minutes",
-      "Revoir les objectifs"
-    ];
-
-    const TODAY_KEY = new Date().toISOString().split('T')[0];
-
-    function loadState() {
-      const lastDate = localStorage.getItem('last_active_date');
-      let currentData = JSON.parse(localStorage.getItem('current_tasks') || 'null');
-
-      // Si changement de jour, on archive automatiquement la journée précédente
-      if (lastDate && lastDate !== TODAY_KEY && currentData) {
-        saveToArchive(lastDate, currentData);
-        currentData = null;
-      }
-
-      // Initialisation du nouveau jour si besoin
-      if (!currentData) {
-        currentData = DEFAULT_TASKS.map(title => ({ title, completed: false }));
-        localStorage.setItem('current_tasks', JSON.stringify(currentData));
-        localStorage.setItem('last_active_date', TODAY_KEY);
-      }
-
-      render();
-    }
-
-    function toggleTask(index) {
-      const tasks = JSON.parse(localStorage.getItem('current_tasks'));
-      tasks[index].completed = !tasks[index].completed;
-      localStorage.setItem('current_tasks', JSON.stringify(tasks));
-      render();
-    }
-
-    function archiveAndReset() {
-      const tasks = JSON.parse(localStorage.getItem('current_tasks'));
-      const activeDate = localStorage.getItem('last_active_date') || TODAY_KEY;
-      
-      saveToArchive(activeDate, tasks);
-
-      // Réinitialisation avec la liste vierge
-      const freshTasks = DEFAULT_TASKS.map(title => ({ title, completed: false }));
-      localStorage.setItem('current_tasks', JSON.stringify(freshTasks));
-      localStorage.setItem('last_active_date', TODAY_KEY);
-      render();
-    }
-
-    function saveToArchive(dateStr, tasks) {
-      const history = JSON.parse(localStorage.getItem('task_history') || '{}');
-      history[dateStr] = tasks;
-      localStorage.setItem('task_history', JSON.stringify(history));
-    }
-
-    function render() {
-      document.getElementById('current-date').innerText = `Tâches du ${TODAY_KEY}`;
-      const tasks = JSON.parse(localStorage.getItem('current_tasks') || '[]');
-      
-      // Affichage liste active
-      const listEl = document.getElementById('todo-list');
-      listEl.innerHTML = tasks.map((t, i) => `
-        <div class="task-item">
-          <input type="checkbox" ${t.completed ? 'checked' : ''} onchange="toggleTask(${i})">
-          <span style="${t.completed ? 'text-decoration: line-through; opacity: 0.6;' : ''}">${t.title}</span>
-        </div>
-      `).join('');
-
-      // Affichage des archives
-      const history = JSON.parse(localStorage.getItem('task_history') || '{}');
-      const historyEl = document.getElementById('history');
-      const dates = Object.keys(history).sort().reverse();
-      
-      if (dates.length === 0) {
-        historyEl.innerHTML = "<p>Aucune archive pour l'instant.</p>";
-      } else {
-        historyEl.innerHTML = dates.map(date => `
-          <div class="archive-card">
-            <strong>${date}</strong>
-            <ul>
-              ${history[date].map(item => `
-                <li style="${item.completed ? 'text-decoration: line-through;' : ''}">
-                  ${item.completed ? '✅' : '❌'} ${item.title}
-                </li>
-              `).join('')}
-            </ul>
-          </div>
-        `).join('');
-      }
-    }
-
-    loadState();
-  </script>
+  <div id="historique"></div>
 </body>
 </html>
