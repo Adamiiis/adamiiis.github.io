@@ -1,4 +1,47 @@
 {
-  "adam": {},
+  "adam": {
+    "2026-08-29": [
+      {
+        "titre": "Lire 30 minutes par jour",
+        "terminee": false
+      },
+      {
+        "titre": "Envoyer outfit",
+        "terminee": false
+      },
+      {
+        "titre": "Travailler 2h",
+        "terminee": true
+      },
+      {
+        "titre": "Faire du sport/étirements",
+        "terminee": false
+      },
+      {
+        "titre": "Ecrire dans le carnet",
+        "terminee": true
+      },
+      {
+        "titre": "Dormir au moins 7h",
+        "terminee": false
+      },
+      {
+        "titre": "Marcher 7000 pas",
+        "terminee": true
+      },
+      {
+        "titre": "Pas de fast-food/que gras",
+        "terminee": true
+      },
+      {
+        "titre": "Balade matinale (5min)",
+        "terminee": false
+      },
+      {
+        "titre": "S'appeler/s'envoyer un joli mot <3",
+        "terminee": true
+      }
+    ]
+  },
   "mel": {}
 }
