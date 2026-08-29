@@ -5,19 +5,21 @@ const CLE_AUJOURDHUI = new Date().toISOString().split('T')[0];
 let archivesPubliques = { adam: {}, mel: {} };
 
 async function chargerEtat() {
-  try {
-    const reponse = await fetch('./historique.json');
-    const donnees = await reponse.json();
-    archivesPubliques = {
-      adam: donnees.adam || {},
-      mel: donnees.mel || {}
-    };
-  } catch (erreur) {
-    archivesPubliques = { adam: {}, mel: {} };
-  }
-
   initialiserPersonne('adam', TACHES_ADAM);
   initialiserPersonne('mel', TACHES_MEL);
+
+  try {
+    const reponse = await fetch('./historique.json');
+    if (reponse.ok) {
+      const donnees = await reponse.json();
+      archivesPubliques = {
+        adam: donnees.adam || {},
+        mel: donnees.mel || {}
+      };
+    }
+  } catch (erreur) {
+    console.error("Impossible de charger historique.json :", erreur);
+  }
 
   afficher();
 }
@@ -26,6 +28,7 @@ function initialiserPersonne(cle, tachesDefaut) {
   const derniereDate = localStorage.getItem(`date_${cle}`);
   let donneesActuelles = JSON.parse(localStorage.getItem(`taches_${cle}`) || 'null');
 
+  // Si pas de données ou nouveau jour, on réinitialise avec la liste par défaut
   if (!donneesActuelles || derniereDate !== CLE_AUJOURDHUI) {
     donneesActuelles = tachesDefaut.map(titre => ({ titre, terminee: false }));
     localStorage.setItem(`taches_${cle}`, JSON.stringify(donneesActuelles));
