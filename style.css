@@ -1,0 +1,37 @@
+body {
+  font-family: system-ui, sans-serif;
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 10px;
+}
+
+.conteneur-colonnes {
+  display: flex;
+  gap: 20px;
+}
+
+.colonne {
+  flex: 1;
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.element-tache {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0;
+}
+
+.barre {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.carte-archive {
+  background: #f4f4f5;
+  padding: 8px;
+  border-radius: 6px;
+  margin-top: 10px;
+}
