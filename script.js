@@ -1,5 +1,7 @@
-const TACHES_ADAM = ["1", "2", "3", "4"];
-const TACHES_MEL = ["1", "2", "3", "4"];
+const TACHES_ADAM = ["Lire 30 minutes par jour", "Envoyer outfit", "Travailler 2h", "Faire du sport/étirements", "Ecrire dans le carnet", "Dormir au moins 7h",
+                    "Marcher 7000 pas", "Pas de fast-food/que gras", "Balade matinale (5min)", "S'appeler/s'envoyer un joli mot <3"];
+const TACHES_MEL = ["Lire 30 minutes par jour", "Envoyer outfit", "Travailler 2h", "Faire du sport/étirements", "Ecrire dans le carnet", "Dormir au moins 7h",
+                   "Marcher 7000 pas", "Pas de fast-food/que gras", "Balade matinale (5min)", "S'appeler/s'envoyer un joli mot <3"];
 
 const CLE_AUJOURDHUI = new Date().toISOString().split('T')[0];
 let archivesPubliques = { adam: {}, mel: {} };
