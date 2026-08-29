@@ -28,7 +28,6 @@ function initialiserPersonne(cle, tachesDefaut) {
   const derniereDate = localStorage.getItem(`date_${cle}`);
   let donneesActuelles = JSON.parse(localStorage.getItem(`taches_${cle}`) || 'null');
 
-  // Si pas de données ou nouveau jour, on réinitialise avec la liste par défaut
   if (!donneesActuelles || derniereDate !== CLE_AUJOURDHUI) {
     donneesActuelles = tachesDefaut.map(titre => ({ titre, terminee: false }));
     localStorage.setItem(`taches_${cle}`, JSON.stringify(donneesActuelles));
