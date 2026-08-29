@@ -4,17 +4,31 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mel&Adam</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <h1 id="aujourdhui">Aujourd'hui</h1>
-  <div id="aFaire"></div>
-  <button onclick="archiverEtRecommencer()">Archiver maintenant & recommencer</button>
 
-  <hr style="margin: 40px 0;">
+  <div class="conteneur-colonnes">
+    <!-- Colonne Adam -->
+    <div class="colonne">
+      <h2>Adam</h2>
+      <div id="aFaireAdam"></div>
+      <button onclick="archiverPersonne('adam')">Archiver Adam</button>
+      <h3>Archives Adam</h3>
+      <div id="historiqueAdam"></div>
+    </div>
 
-  <h2>Archives</h2>
-  <div id="historique"></div>
+    <!-- Colonne Mélanie -->
+    <div class="colonne">
+      <h2>Mélanie</h2>
+      <div id="aFaireMel"></div>
+      <button onclick="archiverPersonne('mel')">Archiver Mélanie</button>
+      <h3>Archives Mélanie</h3>
+      <div id="historiqueMel"></div>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
