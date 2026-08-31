@@ -41,6 +41,48 @@
         "titre": "S'appeler/s'envoyer un joli mot <3",
         "terminee": true
       }
+    ],
+    "2026-08-30": [
+      {
+        "titre": "Lire 30 minutes par jour",
+        "terminee": false
+      },
+      {
+        "titre": "Envoyer outfit",
+        "terminee": true
+      },
+      {
+        "titre": "Travailler 2h",
+        "terminee": true
+      },
+      {
+        "titre": "Faire du sport/étirements",
+        "terminee": true
+      },
+      {
+        "titre": "Ecrire dans le carnet",
+        "terminee": true
+      },
+      {
+        "titre": "Dormir au moins 7h",
+        "terminee": true
+      },
+      {
+        "titre": "Marcher 7000 pas",
+        "terminee": true
+      },
+      {
+        "titre": "Pas de fast-food/que gras",
+        "terminee": true
+      },
+      {
+        "titre": "Balade matinale (5min)",
+        "terminee": true
+      },
+      {
+        "titre": "S'appeler/s'envoyer un joli mot <3",
+        "terminee": true
+      }
     ]
   },
   "mel": {
